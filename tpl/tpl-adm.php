@@ -36,6 +36,8 @@
     .statusToggle {
         background: #eee;
         color: #686868;
+        min-width: 70px;
+        text-align: center;
         border: 0;
         padding: 3px 12px;
         border-radius: 20px;
@@ -83,8 +85,9 @@
         <h1>پنل مدیریت <span style="color:#007bec">سون مپ</span></h1>
         <div class="box">
             <a class="statusToggle" href="<?=BASE_URL?>" target="_blank">🏠</a>
-            <a class="statusToggle active" href="?status=1">فعال</a>
-            <a class="statusToggle" href="?status=0">غیرفعال</a>
+            <a class="statusToggle active" href="<?=BASE_URL?>adm.php">همه</a>
+            <a class="statusToggle active" href="?verified=1">فعال</a>
+            <a class="statusToggle" href="?verified=0">غیرفعال</a>
             <a class="statusToggle" href="?logout=1" style="float:left" target="_blank">خروج</a>
         </div>
         <div class="box">
@@ -102,13 +105,14 @@
         <?php foreach($locations as $loc): ?>
         <tr>
             <td><?=$loc->title?></td>
-            <td class="text-center"><?=$loc->created_at?></td>
+            <td class="text-center"><?=Verta::instance($loc->created_at)->format('%B %d، %Y');?></td>
             <td class="text-center"><?=$loc->lat?></td>
             <td class="text-center"><?=$loc->lng?></td>
             <td>
-                <button class="statusToggle active" data-loc='111'>فعال</button> 
-                <button class="statusToggle" data-loc='111'>غیر فعال</button> 
-                <button class="preview" data-loc='111'>👁️‍🗨️</button> 
+                <button class="statusToggle <?=$loc->verified ? 'active' : ''?>" data-loc='<?=$loc->id?>'>
+                تایید
+                </button>  
+                <button class="preview" data-loc='<?=$loc->id?>'>👁️‍🗨️</button> 
             </td>
         </tr>
         <?php endforeach; ?>        
@@ -119,7 +123,7 @@
     </div>
 
     <div class="modal-overlay" style="display: none;">
-        <div class="modal">
+        <div class="modal" style ="width:70%; height:400px;">
             <span class="close">x</span>
             <div class="modal-content">
                 <iframe id='mapWivdow' src="#" frameborder="0"></iframe>
@@ -134,7 +138,22 @@
     $(document).ready(function() {
         $('.preview').click(function() {
             $('.modal-overlay').fadeIn();
-            $('#mapWivdow').attr('src','<?=BASE_URL?>');
+            $('#mapWivdow').attr('src','<?=BASE_URL?>"?loc=' + $(this).attr('data-loc'));
+        });
+
+        $('.statusToggle').click(function() {
+            cons btn = $(this);
+            const locid = $(this).attr('data-loc');
+            $.ajax({
+              url: '<?= BASE_URL . 'process/statusTuggle.php'?>',
+              method:'POST',
+              data: {loc:btn.attr('data-loc')},
+              success: function(response) {
+                if(response = 1){
+                 
+                }
+              }
+            })
         });
         $('.modal-overlay .close').click(function() {
             $('.modal-overlay').fadeOut();

@@ -6,7 +6,9 @@ if( isset($_GET['logout']) and $_GET['logout'] = 1){
 }
 
 
-if($_SERVER['REQUEST_METHOD'] = 'POST' ){
+if($_SERVER['REQUEST_METHOD'] = 'POST'
+&& isset($_POST['username'])
+&& isset($_POST['password']) ){
   if (!login($_POST['username'], $_POST['password'])) {
     message("نام کاربری یا رمز عبور اشتباه است");
   }
@@ -14,7 +16,7 @@ if($_SERVER['REQUEST_METHOD'] = 'POST' ){
 
 if (isLoggedin()) {
     $params = $_GET ?? [];
-    $locations = getLocations($params);
+    $locations = getLocation($params);
     include "tpl/tpl-adm.php";
 } else {
     include "tpl/tpl-adm-form.php";
